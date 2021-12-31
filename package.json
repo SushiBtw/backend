@@ -1,8 +1,8 @@
 {
-  "name": "nest-typescript-starter",
+  "name": "vanilla-backend",
   "private": true,
   "version": "1.0.0",
-  "description": "Nest TypeScript starter repository",
+  "description": "Vanilla backend code.",
   "license": "MIT",
   "scripts": {
     "prebuild": "rimraf dist",
