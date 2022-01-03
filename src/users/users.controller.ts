@@ -2,11 +2,11 @@ import {
     BadRequestException,
     Body,
     ConflictException,
-    Controller,
+    Controller, HttpCode, NotFoundException,
     Param,
-    Post
+    Post, UnauthorizedException
 } from '@nestjs/common';
-import {User, UserDto} from "./user.interface";
+import {User, UserDto, UserRegisterDto} from "./user.interface";
 import {UsersService} from "./users.service";
 import isEmail from 'validator/lib/isEmail';
 import isLength from "validator/lib/isLength";
@@ -23,7 +23,7 @@ export class UsersController {
         private readonly configService: ConfigService
     ) {}
     @Post()
-    async register(@Body() user: UserDto) {
+    async register(@Body() user: UserRegisterDto) {
         // Check if the email is valid
         if (!isEmail(user.email)) throw new BadRequestException('This email is badly formatted.');
         // Get all users from the database
@@ -96,5 +96,19 @@ export class UsersController {
         const user = await this.usersService.verify(token);
         // Return the user's object
         return {user};
+    }
+    @Post('login')
+    @HttpCode(200)
+    async login(@Body() user: UserDto) {
+        // Get the user from the database
+        const u = await this.usersService.findOneByEmail(user.email);
+        // Check if the user exists
+        if (!u) throw new NotFoundException('Login or password is incorrect.');
+        // Check if the password is correct
+        if (!await bcrypt.compare(user.password, u.password)) throw new UnauthorizedException('Login or password is incorrect.');
+        // Delete the password from the user object
+        delete u.password;
+        // Return the user's object
+        return {user: u, token: u.token};
     }
 }

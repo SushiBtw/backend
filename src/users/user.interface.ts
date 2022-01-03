@@ -1,8 +1,9 @@
-export interface UserDto {
+export interface UserRegisterDto {
     username: string;
     email: string;
     password: string;
 }
+export type UserDto = Omit<UserRegisterDto, "username">;
 export interface PartialUser {
     id: string;
     username: string;
