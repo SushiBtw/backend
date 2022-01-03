@@ -4,8 +4,7 @@ export const RethinkProvider = {
     provide: 'RethinkProvider',
     useFactory: async () => {
         return await r.connect({
-            host: 'localhost',
-            db: process.env.DB_NAME || 'vanilla'
+            db: 'vanilla'
         });
     }
 }

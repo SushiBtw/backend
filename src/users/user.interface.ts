@@ -1,3 +1,8 @@
+export interface UserDto {
+    username: string;
+    email: string;
+    password: string;
+}
 export interface PartialUser {
     id: string;
     username: string;
@@ -5,13 +10,19 @@ export interface PartialUser {
     bot: boolean;
     flags: string[];
     tag: string;
-    custom_status: string;
+    activity: string;
     status: 'ONLINE' | 'DND' | 'IDLE' | 'UNAVAILABLE';
-    created_at: number;
+    created_timestamp: number;
 }
 export interface User extends PartialUser {
     email: string;
     password: string;
     verified: boolean;
     token: string;
+    guilds: string[];
+    friend_requests: {
+        incoming: string[];
+        outgoing: string[];
+    }
+    friends: string[];
 }

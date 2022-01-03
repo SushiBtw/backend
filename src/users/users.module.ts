@@ -1,4 +1,8 @@
-import { Module } from '@nestjs/common';
+import {Module} from '@nestjs/common';
+import { UsersService } from './users.service';
+import {RethinkProvider} from "../rethink/rethink";
 
-@Module({})
+@Module({
+  providers: [UsersService, RethinkProvider]
+})
 export class UsersModule {}
