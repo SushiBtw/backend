@@ -1,4 +1,11 @@
-import {Body, Controller, HttpException, HttpStatus, Param, Post} from '@nestjs/common';
+import {
+    BadRequestException,
+    Body,
+    ConflictException,
+    Controller,
+    Param,
+    Post
+} from '@nestjs/common';
 import {User, UserDto} from "./user.interface";
 import {UsersService} from "./users.service";
 import isEmail from 'validator/lib/isEmail';
@@ -18,11 +25,11 @@ export class UsersController {
     @Post()
     async register(@Body() user: UserDto) {
         // Check if the email is valid
-        if (!isEmail(user.email)) throw new HttpException('This email is badly formatted.', HttpStatus.BAD_REQUEST);
+        if (!isEmail(user.email)) throw new BadRequestException('This email is badly formatted.');
         // Get all users from the database
         const users: User[] = await this.usersService.getAll();
         // Check if a user with that email already exists
-        if (users.find(u => u.email === user.email)) throw new HttpException('This email has already been claimed.', HttpStatus.CONFLICT);
+        if (users.find(u => u.email === user.email)) throw new ConflictException('This email has already been claimed.');
         // Generate a random user ID and check if it is unique
         let userID = randomstring.generate(16);
         while (users.find(u => u.id === userID)) userID = randomstring.generate(16);
@@ -30,7 +37,7 @@ export class UsersController {
         let tag = randomstring.generate(8);
         while (users.find(u => `${user.username}#${tag}` === `${u.username}#${tag}`)) tag = randomstring.generate(8);
         // Check if password is of length 6 or more
-        if (!isLength(user.password, {min: 6, max: 128})) throw new HttpException('Invalid password (Password length must be between 6 and 128).', HttpStatus.BAD_REQUEST);
+        if (!isLength(user.password, {min: 6, max: 128})) throw new BadRequestException('Invalid password (Password length must be between 6 and 128).');
         // Hash the password
         const hash = await bcrypt.hash(user.password, 10);
         // Generate the token
