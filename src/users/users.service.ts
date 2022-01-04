@@ -41,6 +41,10 @@ export class UsersService {
         await r.table('users').filter({id: user.id}).update(user).run(this.conn);
         return user;
     }
+    public async findOneByToken(token: string): Promise<User> {
+        const user: User[] = await r.table('users').filter({token}).coerceTo('array').run(this.conn);
+        return user[0];
+    }
     public async updateByEmail(user: User): Promise<User> {
         await r.table('users').filter({email: user.email}).update(user).run(this.conn);
         return user;

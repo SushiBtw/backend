@@ -106,9 +106,12 @@ export class UsersController {
         if (!u) throw new NotFoundException('Login or password is incorrect.');
         // Check if the password is correct
         if (!await bcrypt.compare(user.password, u.password)) throw new UnauthorizedException('Login or password is incorrect.');
+        // Get the token
+        const token = u.token;
         // Delete the password from the user object
         delete u.password;
+        delete u.token;
         // Return the user's object
-        return {user: u, token: u.token};
+        return {user: u, token};
     }
 }
